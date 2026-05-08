@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -86,7 +87,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Encryption key for medical document storage (AES-256 equivalent)
 # In production set this via environment variable:
 #   export FILE_ENCRYPTION_KEY='your-secret-key-here'
-import os
 FILE_ENCRYPTION_KEY = os.environ.get(
     'FILE_ENCRYPTION_KEY',
     'coruscant-health-default-encryption-key-change-in-production'
