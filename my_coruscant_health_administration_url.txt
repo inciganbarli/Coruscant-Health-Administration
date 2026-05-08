@@ -1,10 +1,9 @@
-https://coruscant-health-administration.onrender.com/
-(Note: Replace this URL with your actual deployment endpoint. This project is prepared for deployment on platforms like Render, Railway, or Heroku.)
+https://coruscant-health-administration-rho.vercel.app/
 
-Deployment Instructions:
-1. Push this repository to GitHub.
-2. Connect the repository to a hosting service (e.g., Render.com).
-3. Set the environment variable `FILE_ENCRYPTION_KEY` to a secure 32-byte key.
-4. Set `DEBUG` to `False` in production.
-5. Run migrations: `python manage.py migrate`.
-6. Collect static files: `python manage.py collectstatic`.
+Deployment Platform: Vercel
+Deployment Date: 2026-05-08
+
+Instructions:
+The project is hosted as a serverless function on Vercel. 
+Environment variables (SECRET_KEY, FILE_ENCRYPTION_KEY) are managed via the Vercel dashboard.
+Static files are served using WhiteNoise.
