@@ -9,7 +9,7 @@ WT = {'class': 'form-control', 'rows': 3}
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs=W))
-    role = forms.ChoiceField(choices=UserProfile.ROLES, widget=forms.Select(attrs=W))
+    role = forms.ChoiceField(choices=[('patient', 'Patient'), ('doctor', 'Doctor')], widget=forms.Select(attrs=W))
 
     class Meta:
         model = User
