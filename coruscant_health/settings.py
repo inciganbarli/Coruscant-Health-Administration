@@ -48,13 +48,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'coruscant_health.wsgi.application'
 
-# Vercel-specific database setup
-if os.environ.get('VERCEL') or 'VERCEL_URL' in os.environ:
+import dj_database_url
+
+# Database configuration
+db_url = os.environ.get('DATABASE_URL') or os.environ.get('POSTGRES_URL')
+if db_url:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': '/tmp/db.sqlite3',
-        }
+        'default': dj_database_url.config(
+            default=db_url,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
 else:
     DATABASES = {
