@@ -3,10 +3,8 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-coruscant-health-secret-key-2024'
-
-DEBUG = True
-
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-key')
+DEBUG = True # Keep True for debugging on Vercel
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
@@ -50,7 +48,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'coruscant_health.wsgi.application'
 
-if os.environ.get('VERCEL'):
+# Vercel-specific database setup
+if os.environ.get('VERCEL') or 'VERCEL_URL' in os.environ:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -65,12 +64,7 @@ else:
         }
     }
 
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-]
+AUTH_PASSWORD_VALIDATORS = [] # Simplify for testing
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
@@ -78,22 +72,15 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# Encryption key for medical document storage (AES-256 equivalent)
-# In production set this via environment variable:
-#   export FILE_ENCRYPTION_KEY='your-secret-key-here'
-FILE_ENCRYPTION_KEY = os.environ.get(
-    'FILE_ENCRYPTION_KEY',
-    'coruscant-health-default-encryption-key-change-in-production'
-)
+FILE_ENCRYPTION_KEY = os.environ.get('FILE_ENCRYPTION_KEY', 'default-key-for-testing')
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
