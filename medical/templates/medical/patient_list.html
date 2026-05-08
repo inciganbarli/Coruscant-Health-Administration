@@ -1,0 +1,41 @@
+{% extends 'medical/base.html' %}
+{% block title %}Patients{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title">🧑‍⚕️ <span>Patients</span></div>
+    <a href="{% url 'patient_add' %}" class="btn btn-primary">+ Add Patient</a>
+</div>
+<div class="card">
+    {% if patients %}
+    <div class="table-wrap">
+    <table>
+        <thead>
+            <tr><th>Name</th><th>Age</th><th>Gender</th><th>Blood Type</th><th>Phone</th><th>Admitted</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+        {% for p in patients %}
+        <tr>
+            <td><a href="{% url 'patient_detail' p.pk %}">{{ p.name }}</a></td>
+            <td>{{ p.age }}</td>
+            <td>{{ p.get_gender_display }}</td>
+            <td>{{ p.blood_type|default:"—" }}</td>
+            <td>{{ p.phone|default:"—" }}</td>
+            <td>{{ p.date_admitted }}</td>
+            <td>{% if p.is_emergency %}<span class="badge badge-emergency">Emergency</span>{% else %}<span class="badge badge-completed">Regular</span>{% endif %}</td>
+            <td>
+                <a href="{% url 'patient_edit' p.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{% url 'patient_delete' p.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No patients registered yet.</p>
+        <a href="{% url 'patient_add' %}" class="btn btn-primary" style="margin-top:1rem;">Add First Patient</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'medical/base.html' %}
+{% block title %}{{ patient.name }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title">{{ patient.name }} {% if patient.is_emergency %}<span class="badge badge-emergency">Emergency</span>{% endif %}</div>
+    <div>
+        <a href="{% url 'patient_edit' patient.pk %}" class="btn btn-warning">Edit</a>
+        <a href="{% url 'patient_delete' patient.pk %}" class="btn btn-danger">Delete</a>
+        <a href="{% url 'patient_list' %}" class="btn btn-secondary">← Back</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title">Patient Information</div>
+    <div class="detail-grid">
+        <div class="detail-item"><label>Age</label><p>{{ patient.age }}</p></div>
+        <div class="detail-item"><label>Gender</label><p>{{ patient.get_gender_display }}</p></div>
+        <div class="detail-item"><label>Blood Type</label><p>{{ patient.blood_type|default:"Not recorded" }}</p></div>
+        <div class="detail-item"><label>Phone</label><p>{{ patient.phone|default:"Not recorded" }}</p></div>
+        <div class="detail-item"><label>Date Admitted</label><p>{{ patient.date_admitted }}</p></div>
+        <div class="detail-item"><label>Address</label><p>{{ patient.address|default:"Not recorded" }}</p></div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title">Device Data <a href="{% url 'device_data_upload' %}" class="btn btn-secondary btn-sm" style="float:right">⬆ Upload</a></div>
+    {% if device_data %}
+    <table>
+        <thead><tr><th>Title</th><th>Description</th><th>Uploaded</th><th>File</th></tr></thead>
+        <tbody>
+        {% for d in device_data %}
+        <tr>
+            <td>{{ d.title }}</td>
+            <td>{{ d.description|truncatechars:50|default:"—" }}</td>
+            <td>{{ d.uploaded_at|date:"M d, Y H:i" }}</td>
+            <td>{% if d.file %}<a href="{% url 'download_file' 'device' d.pk %}" target="_blank">Download</a>{% else %}—{% endif %}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}<div class="empty-state"><p>No device data uploaded.</p></div>{% endif %}
+</div>
+
+<div class="card">
+    <div class="card-title">Medical Reports <a href="{% url 'report_add' %}" class="btn btn-warning btn-sm" style="float:right">+ New Report</a></div>
+    {% if reports %}
+    <table>
+        <thead><tr><th>Doctor</th><th>Diagnosis</th><th>Date</th><th>Action</th></tr></thead>
+        <tbody>
+        {% for r in reports %}
+        <tr>
+            <td>Dr. {{ r.doctor.name }}</td>
+            <td>{{ r.diagnosis|truncatechars:60 }}</td>
+            <td>{{ r.date_created|date:"M d, Y" }}</td>
+            <td><a href="{% url 'report_detail' r.pk %}" class="btn btn-secondary btn-sm">View</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}<div class="empty-state"><p>No reports yet.</p></div>{% endif %}
+</div>
+
+<div class="card">
+    <div class="card-title">Orders <a href="{% url 'order_add' %}" class="btn btn-secondary btn-sm" style="float:right">+ New Order</a></div>
+    {% if orders %}
+    <table>
+        <thead><tr><th>Type</th><th>Department</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+        <tbody>
+        {% for o in orders %}
+        <tr>
+            <td>{{ o.get_order_type_display }}</td>
+            <td>{{ o.department }}</td>
+            <td><span class="badge badge-{{ o.status }}">{{ o.get_status_display }}</span></td>
+            <td>{{ o.date_created|date:"M d, Y" }}</td>
+            <td><a href="{% url 'order_detail' o.pk %}" class="btn btn-secondary btn-sm">View</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}<div class="empty-state"><p>No orders yet.</p></div>{% endif %}
+</div>
+{% endblock %}

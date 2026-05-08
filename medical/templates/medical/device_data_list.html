@@ -1,0 +1,34 @@
+{% extends 'medical/base.html' %}
+{% block title %}Device Data{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title">📡 <span>Device Data</span></div>
+    <a href="{% url 'device_data_upload' %}" class="btn btn-primary">⬆ Upload Data</a>
+</div>
+<div class="card">
+    {% if data %}
+    <div class="table-wrap">
+    <table>
+        <thead><tr><th>Patient</th><th>Title</th><th>Description</th><th>File</th><th>Uploaded</th><th>Actions</th></tr></thead>
+        <tbody>
+        {% for d in data %}
+        <tr>
+            <td><a href="{% url 'patient_detail' d.patient.pk %}">{{ d.patient.name }}</a></td>
+            <td>{{ d.title }}</td>
+            <td>{{ d.description|truncatechars:50|default:"—" }}</td>
+            <td>{% if d.file %}<a href="{% url 'download_file' 'device' d.pk %}" target="_blank" class="btn btn-secondary btn-sm">Download</a>{% else %}—{% endif %}</td>
+            <td>{{ d.uploaded_at|date:"M d, Y H:i" }}</td>
+            <td><a href="{% url 'device_data_delete' d.pk %}" class="btn btn-danger btn-sm">Delete</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No device data uploaded yet.</p>
+        <a href="{% url 'device_data_upload' %}" class="btn btn-primary" style="margin-top:1rem;">Upload First File</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

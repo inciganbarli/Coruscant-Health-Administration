@@ -1,0 +1,36 @@
+{% extends 'medical/base.html' %}
+{% block title %}Emergency{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title">🚨 <span>Emergency Cases</span></div>
+    <a href="{% url 'emergency_add' %}" class="btn btn-danger">🚨 Add Emergency Patient</a>
+</div>
+<div class="card">
+    {% if emergencies %}
+    <div class="table-wrap">
+    <table>
+        <thead><tr><th>Name</th><th>Age</th><th>Condition</th><th>Contact</th><th>Arrived</th><th>Patient Record</th></tr></thead>
+        <tbody>
+        {% for e in emergencies %}
+        <tr>
+            <td><strong>{{ e.name }}</strong></td>
+            <td>{{ e.age|default:"Unknown" }}</td>
+            <td>{{ e.condition|truncatechars:60 }}</td>
+            <td>{{ e.contact_number|default:"—" }}</td>
+            <td>{{ e.arrived_at|date:"M d, Y H:i" }}</td>
+            <td>{% if e.patient %}<a href="{% url 'patient_detail' e.patient.pk %}" class="btn btn-secondary btn-sm">View Patient</a>{% else %}—{% endif %}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No emergency cases.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+
+

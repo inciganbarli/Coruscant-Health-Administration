@@ -1,0 +1,38 @@
+{% extends 'medical/base.html' %}
+{% block title %}Doctors{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title">👨‍⚕️ <span>Doctors</span></div>
+    <a href="{% url 'doctor_add' %}" class="btn btn-primary">+ Add Doctor</a>
+</div>
+<div class="card">
+    {% if doctors %}
+    <div class="table-wrap">
+    <table>
+        <thead><tr><th>Name</th><th>Specialization</th><th>Department</th><th>Phone</th><th>Email</th><th>Joined</th><th>Actions</th></tr></thead>
+        <tbody>
+        {% for d in doctors %}
+        <tr>
+            <td><a href="{% url 'doctor_detail' d.pk %}">Dr. {{ d.name }}</a></td>
+            <td>{{ d.specialization }}</td>
+            <td>{{ d.department|default:"—" }}</td>
+            <td>{{ d.phone|default:"—" }}</td>
+            <td>{{ d.email|default:"—" }}</td>
+            <td>{{ d.date_joined }}</td>
+            <td>
+                <a href="{% url 'doctor_edit' d.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{% url 'doctor_delete' d.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No doctors registered yet.</p>
+        <a href="{% url 'doctor_add' %}" class="btn btn-primary" style="margin-top:1rem;">Add First Doctor</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

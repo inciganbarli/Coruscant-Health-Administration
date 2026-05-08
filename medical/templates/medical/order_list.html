@@ -1,0 +1,39 @@
+{% extends 'medical/base.html' %}
+{% block title %}Orders{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title">🔬 <span>Orders</span></div>
+    <a href="{% url 'order_add' %}" class="btn btn-primary">+ New Order</a>
+</div>
+<div class="card">
+    {% if orders %}
+    <div class="table-wrap">
+    <table>
+        <thead><tr><th>Type</th><th>Patient</th><th>Doctor</th><th>Department</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody>
+        {% for o in orders %}
+        <tr>
+            <td><a href="{% url 'order_detail' o.pk %}">{{ o.get_order_type_display }}</a></td>
+            <td>{{ o.patient.name }}</td>
+            <td>Dr. {{ o.doctor.name }}</td>
+            <td>{{ o.department }}</td>
+            <td><span class="badge badge-{{ o.status }}">{{ o.get_status_display }}</span></td>
+            <td>{{ o.date_created|date:"M d, Y" }}</td>
+            <td>
+                <a href="{% url 'order_detail' o.pk %}" class="btn btn-secondary btn-sm">View</a>
+                <a href="{% url 'order_edit' o.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{% url 'order_delete' o.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No orders created yet.</p>
+        <a href="{% url 'order_add' %}" class="btn btn-primary" style="margin-top:1rem;">Create First Order</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

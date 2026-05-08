@@ -1,0 +1,24 @@
+{% extends 'medical/base.html' %}
+{% block title %}Upload Result — {{ order }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title">⬆ <span>Upload Result</span></div>
+    <a href="{% url 'order_detail' order.pk %}" class="btn btn-secondary">← Back to Order</a>
+</div>
+<div class="card" style="max-width:600px;">
+    <div class="card-title">{{ order.get_order_type_display }} — {{ order.patient.name }}</div>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+            <label>{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<ul style="list-style:none;color:#fca5a5;font-size:0.8rem;margin-top:0.3rem;">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        {% endfor %}
+        <div style="margin-top:1.5rem;">
+            <button type="submit" class="btn btn-success">Upload Result</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

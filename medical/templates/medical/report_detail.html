@@ -1,0 +1,34 @@
+{% extends 'medical/base.html' %}
+{% block title %}Report — {{ report.patient.name }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title">📋 <span>Medical Report</span></div>
+    <div>
+        <a href="{% url 'report_edit' report.pk %}" class="btn btn-warning">Edit</a>
+        <a href="{% url 'report_delete' report.pk %}" class="btn btn-danger">Delete</a>
+        <a href="{% url 'report_list' %}" class="btn btn-secondary">← Back</a>
+    </div>
+</div>
+<div class="card">
+    <div class="card-title">Report Details</div>
+    <div class="detail-grid">
+        <div class="detail-item"><label>Patient</label><p><a href="{% url 'patient_detail' report.patient.pk %}">{{ report.patient.name }}</a></p></div>
+        <div class="detail-item"><label>Doctor</label><p><a href="{% url 'doctor_detail' report.doctor.pk %}">Dr. {{ report.doctor.name }}</a></p></div>
+        <div class="detail-item"><label>Date</label><p>{{ report.date_created|date:"M d, Y H:i" }}</p></div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-title">Diagnosis</div>
+    <p style="color:#cbd5e1;line-height:1.7;">{{ report.diagnosis }}</p>
+</div>
+<div class="card">
+    <div class="card-title">Treatment</div>
+    <p style="color:#cbd5e1;line-height:1.7;">{{ report.treatment }}</p>
+</div>
+{% if report.notes %}
+<div class="card">
+    <div class="card-title">Notes</div>
+    <p style="color:#cbd5e1;line-height:1.7;">{{ report.notes }}</p>
+</div>
+{% endif %}
+{% endblock %}

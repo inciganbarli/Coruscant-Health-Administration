@@ -1,0 +1,42 @@
+{% extends 'medical/base.html' %}
+{% block title %}User Management{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title">👥 <span>User Management</span></div>
+</div>
+<div class="card">
+    {% if users %}
+    <div class="table-wrap">
+    <table>
+        <thead><tr><th>Username</th><th>Email</th><th>Role</th><th>Staff</th><th>Joined</th><th>Actions</th></tr></thead>
+        <tbody>
+        {% for u in users %}
+        <tr>
+            <td><strong>{{ u.username }}</strong></td>
+            <td>{{ u.email|default:"—" }}</td>
+            <td>
+                {% if u.userprofile %}
+                <span class="badge badge-in_progress">{{ u.userprofile.get_role_display }}</span>
+                {% else %}
+                <span class="badge badge-cancelled">No role</span>
+                {% endif %}
+            </td>
+            <td>{% if u.is_staff %}Yes{% else %}No{% endif %}</td>
+            <td>{{ u.date_joined|date:"M d, Y" }}</td>
+            <td>
+                {% if not u.is_superuser %}
+                <a href="{% url 'user_delete' u.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                {% else %}
+                <span style="color:#64748b;font-size:0.8rem;">Superuser</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+    <div class="empty-state"><p>No users found.</p></div>
+    {% endif %}
+</div>
+{% endblock %}

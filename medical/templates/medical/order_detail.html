@@ -1,0 +1,57 @@
+{% extends 'medical/base.html' %}
+{% block title %}Order — {{ order.get_order_type_display }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title">🔬 <span>{{ order.get_order_type_display }}</span> <span class="badge badge-{{ order.status }}">{{ order.get_status_display }}</span></div>
+    <div>
+        <a href="{% url 'order_edit' order.pk %}" class="btn btn-warning">Edit</a>
+        <a href="{% url 'order_delete' order.pk %}" class="btn btn-danger">Delete</a>
+        <a href="{% url 'order_list' %}" class="btn btn-secondary">← Back</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title">Order Details</div>
+    <div class="detail-grid">
+        <div class="detail-item"><label>Patient</label><p><a href="{% url 'patient_detail' order.patient.pk %}">{{ order.patient.name }}</a></p></div>
+        <div class="detail-item"><label>Doctor</label><p><a href="{% url 'doctor_detail' order.doctor.pk %}">Dr. {{ order.doctor.name }}</a></p></div>
+        <div class="detail-item"><label>Type</label><p>{{ order.get_order_type_display }}</p></div>
+        <div class="detail-item"><label>Department</label><p>{{ order.department }}</p></div>
+        <div class="detail-item"><label>Created</label><p>{{ order.date_created|date:"M d, Y H:i" }}</p></div>
+    </div>
+    {% if order.notes %}
+    <div style="margin-top:1rem;"><label style="font-size:0.75rem;color:#64748b;text-transform:uppercase;">Notes</label><p style="color:#cbd5e1;margin-top:0.2rem;">{{ order.notes }}</p></div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <div class="card-title">Update Status</div>
+    <form method="post" style="display:flex;gap:1rem;align-items:flex-end;">
+        {% csrf_token %}
+        <div class="form-group" style="flex:1;margin-bottom:0;">
+            <label>Status</label>
+            {{ status_form.status }}
+        </div>
+        <button type="submit" class="btn btn-primary" style="height:fit-content;">Update</button>
+    </form>
+</div>
+
+<div class="card">
+    <div class="card-title">Result {% if not result %}<a href="{% url 'order_result_upload' order.pk %}" class="btn btn-success btn-sm" style="float:right">⬆ Upload Result</a>{% endif %}</div>
+    {% if result %}
+    <div class="detail-grid">
+        <div class="detail-item"><label>Uploaded By</label><p>{{ result.uploaded_by }}</p></div>
+        <div class="detail-item"><label>Uploaded At</label><p>{{ result.uploaded_at|date:"M d, Y H:i" }}</p></div>
+    </div>
+    {% if result.result_text %}
+    <div style="margin-top:1rem;"><label style="font-size:0.75rem;color:#64748b;text-transform:uppercase;">Findings</label><p style="color:#cbd5e1;margin-top:0.2rem;line-height:1.7;">{{ result.result_text }}</p></div>
+    {% endif %}
+    {% if result.result_file %}
+    <div style="margin-top:1rem;"><a href="{% url 'download_file' 'result' result.pk %}" target="_blank" class="btn btn-secondary">📄 Download Result File</a></div>
+    {% endif %}
+    <div style="margin-top:1rem;"><a href="{% url 'order_result_upload' order.pk %}" class="btn btn-warning btn-sm">Update Result</a></div>
+    {% else %}
+    <div class="empty-state"><p>No result uploaded yet.</p></div>
+    {% endif %}
+</div>
+{% endblock %}

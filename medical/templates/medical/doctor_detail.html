@@ -1,0 +1,62 @@
+{% extends 'medical/base.html' %}
+{% block title %}Dr. {{ doctor.name }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title">Dr. <span>{{ doctor.name }}</span></div>
+    <div>
+        <a href="{% url 'doctor_edit' doctor.pk %}" class="btn btn-warning">Edit</a>
+        <a href="{% url 'doctor_delete' doctor.pk %}" class="btn btn-danger">Delete</a>
+        <a href="{% url 'doctor_list' %}" class="btn btn-secondary">← Back</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title">Doctor Information</div>
+    <div class="detail-grid">
+        <div class="detail-item"><label>Specialization</label><p>{{ doctor.specialization }}</p></div>
+        <div class="detail-item"><label>Department</label><p>{{ doctor.department|default:"Not recorded" }}</p></div>
+        <div class="detail-item"><label>Phone</label><p>{{ doctor.phone|default:"Not recorded" }}</p></div>
+        <div class="detail-item"><label>Email</label><p>{{ doctor.email|default:"Not recorded" }}</p></div>
+        <div class="detail-item"><label>Date Joined</label><p>{{ doctor.date_joined }}</p></div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title">Medical Reports <a href="{% url 'report_add' %}" class="btn btn-warning btn-sm" style="float:right">+ New Report</a></div>
+    {% if reports %}
+    <table>
+        <thead><tr><th>Patient</th><th>Diagnosis</th><th>Date</th><th>Action</th></tr></thead>
+        <tbody>
+        {% for r in reports %}
+        <tr>
+            <td>{{ r.patient.name }}</td>
+            <td>{{ r.diagnosis|truncatechars:60 }}</td>
+            <td>{{ r.date_created|date:"M d, Y" }}</td>
+            <td><a href="{% url 'report_detail' r.pk %}" class="btn btn-secondary btn-sm">View</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}<div class="empty-state"><p>No reports by this doctor.</p></div>{% endif %}
+</div>
+
+<div class="card">
+    <div class="card-title">Orders <a href="{% url 'order_add' %}" class="btn btn-secondary btn-sm" style="float:right">+ New Order</a></div>
+    {% if orders %}
+    <table>
+        <thead><tr><th>Type</th><th>Patient</th><th>Department</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody>
+        {% for o in orders %}
+        <tr>
+            <td><a href="{% url 'order_detail' o.pk %}">{{ o.get_order_type_display }}</a></td>
+            <td>{{ o.patient.name }}</td>
+            <td>{{ o.department }}</td>
+            <td><span class="badge badge-{{ o.status }}">{{ o.get_status_display }}</span></td>
+            <td>{{ o.date_created|date:"M d, Y" }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}<div class="empty-state"><p>No orders by this doctor.</p></div>{% endif %}
+</div>
+{% endblock %}

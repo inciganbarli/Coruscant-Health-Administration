@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Coruscant Health Administration{% endblock %}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; }
+        a { color: #60a5fa; text-decoration: none; }
+        a:hover { color: #93c5fd; }
+
+        .navbar {
+            background: #1a1d2e;
+            border-bottom: 1px solid #2d3148;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .navbar-brand { font-size: 1.1rem; font-weight: 700; color: #60a5fa; letter-spacing: 0.5px; }
+        .navbar-brand span { color: #f472b6; }
+        .navbar-nav { display: flex; gap: 0.25rem; align-items: center; flex-wrap: wrap; }
+        .navbar-nav a { padding: 0.4rem 0.75rem; border-radius: 6px; color: #94a3b8; font-size: 0.85rem; transition: all 0.2s; }
+        .navbar-nav a:hover { background: #2d3148; color: #e2e8f0; }
+        .navbar-right { display: flex; align-items: center; gap: 1rem; }
+        .badge-role { background: #1e3a5f; color: #60a5fa; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; }
+        .btn-logout { background: #7f1d1d; color: #fca5a5; padding: 0.3rem 0.75rem; border-radius: 6px; font-size: 0.8rem; }
+        .btn-logout:hover { background: #991b1b; color: #fca5a5; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .page-title { font-size: 1.6rem; font-weight: 700; color: #f1f5f9; }
+        .page-title span { color: #60a5fa; }
+
+        .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1.1rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; border: none; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+        .btn-primary { background: #2563eb; color: #fff; }
+        .btn-primary:hover { background: #1d4ed8; color: #fff; }
+        .btn-success { background: #16a34a; color: #fff; }
+        .btn-success:hover { background: #15803d; color: #fff; }
+        .btn-danger { background: #dc2626; color: #fff; }
+        .btn-danger:hover { background: #b91c1c; color: #fff; }
+        .btn-warning { background: #d97706; color: #fff; }
+        .btn-warning:hover { background: #b45309; color: #fff; }
+        .btn-secondary { background: #334155; color: #cbd5e1; }
+        .btn-secondary:hover { background: #475569; color: #f1f5f9; }
+        .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.8rem; }
+
+        .card { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .card-title { font-size: 1.1rem; font-weight: 600; color: #e2e8f0; margin-bottom: 1rem; border-bottom: 1px solid #2d3148; padding-bottom: 0.75rem; }
+
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #0f1117; color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #2d3148; }
+        td { padding: 0.875rem 1rem; border-bottom: 1px solid #1e2235; color: #cbd5e1; font-size: 0.875rem; }
+        tr:hover td { background: #1e2235; }
+        tr:last-child td { border-bottom: none; }
+
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; color: #94a3b8; font-size: 0.85rem; margin-bottom: 0.4rem; font-weight: 500; }
+        .form-control { width: 100%; background: #0f1117; border: 1px solid #2d3148; border-radius: 8px; color: #e2e8f0; padding: 0.6rem 0.875rem; font-size: 0.9rem; transition: border-color 0.2s; }
+        .form-control:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+        select.form-control option { background: #1a1d2e; }
+
+        .alert { padding: 0.875rem 1.25rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.875rem; }
+        .alert-success { background: #052e16; border: 1px solid #166534; color: #86efac; }
+        .alert-error { background: #450a0a; border: 1px solid #991b1b; color: #fca5a5; }
+        .alert-info { background: #0c1a2e; border: 1px solid #1e3a5f; color: #93c5fd; }
+
+        .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .badge-pending { background: #451a03; color: #fdba74; }
+        .badge-in_progress { background: #0c1a2e; color: #93c5fd; }
+        .badge-completed { background: #052e16; color: #86efac; }
+        .badge-cancelled { background: #1c1917; color: #a8a29e; }
+        .badge-emergency { background: #450a0a; color: #fca5a5; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: #1a1d2e; border: 1px solid #2d3148; border-radius: 12px; padding: 1.25rem; text-align: center; }
+        .stat-number { font-size: 2rem; font-weight: 700; color: #60a5fa; }
+        .stat-label { font-size: 0.8rem; color: #64748b; margin-top: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .detail-item label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+        .detail-item p { color: #e2e8f0; margin-top: 0.2rem; }
+
+        .empty-state { text-align: center; padding: 3rem; color: #64748b; }
+        .empty-state p { font-size: 0.9rem; margin-top: 0.5rem; }
+
+        @media (max-width: 768px) {
+            .navbar { flex-wrap: wrap; height: auto; padding: 0.75rem 1rem; gap: 0.5rem; }
+            .navbar-nav { font-size: 0.8rem; }
+            .detail-grid { grid-template-columns: 1fr; }
+            .page-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+{% if user.is_authenticated %}
+<nav class="navbar">
+    <div class="navbar-brand">⚕ Coruscant <span>Health</span></div>
+    <div class="navbar-nav">
+        <a href="{% url 'home' %}">Dashboard</a>
+        <a href="{% url 'patient_list' %}">Patients</a>
+        <a href="{% url 'doctor_list' %}">Doctors</a>
+        <a href="{% url 'report_list' %}">Reports</a>
+        <a href="{% url 'order_list' %}">Orders</a>
+        <a href="{% url 'device_data_list' %}">Device Data</a>
+        <a href="{% url 'emergency_list' %}">Emergency</a>
+        {% if user.userprofile.role == 'admin' %}
+        <a href="{% url 'user_management' %}">Users</a>
+        {% endif %}
+    </div>
+    <div class="navbar-right">
+        <span class="badge-role">{{ user.username }} · {{ user.userprofile.role }}</span>
+        <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+    </div>
+</nav>
+{% endif %}
+
+<div class="container">
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %}alert-error{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+
+    {% block content %}{% endblock %}
+</div>
+</body>
+</html>

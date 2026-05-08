@@ -1,0 +1,38 @@
+{% extends 'medical/base.html' %}
+{% block title %}Medical Reports{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title">📋 <span>Medical Reports</span></div>
+    <a href="{% url 'report_add' %}" class="btn btn-primary">+ New Report</a>
+</div>
+<div class="card">
+    {% if reports %}
+    <div class="table-wrap">
+    <table>
+        <thead><tr><th>Patient</th><th>Doctor</th><th>Diagnosis</th><th>Treatment</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody>
+        {% for r in reports %}
+        <tr>
+            <td><a href="{% url 'patient_detail' r.patient.pk %}">{{ r.patient.name }}</a></td>
+            <td>Dr. {{ r.doctor.name }}</td>
+            <td>{{ r.diagnosis|truncatechars:50 }}</td>
+            <td>{{ r.treatment|truncatechars:50 }}</td>
+            <td>{{ r.date_created|date:"M d, Y" }}</td>
+            <td>
+                <a href="{% url 'report_detail' r.pk %}" class="btn btn-secondary btn-sm">View</a>
+                <a href="{% url 'report_edit' r.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{% url 'report_delete' r.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No reports created yet.</p>
+        <a href="{% url 'report_add' %}" class="btn btn-primary" style="margin-top:1rem;">Create First Report</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

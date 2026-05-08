@@ -1,0 +1,99 @@
+{% extends 'medical/base.html' %}
+{% block title %}Dashboard — Coruscant Health{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title">⚕ <span>Dashboard</span></div>
+    <span style="color:#64748b;font-size:0.85rem;">Welcome, {{ user.username }}</span>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-number">{{ patient_count }}</div>
+        <div class="stat-label">Patients</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ doctor_count }}</div>
+        <div class="stat-label">Doctors</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ report_count }}</div>
+        <div class="stat-label">Reports</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ order_count }}</div>
+        <div class="stat-label">Orders</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ emergency_count }}</div>
+        <div class="stat-label">Emergency Cases</div>
+    </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+    <div class="card">
+        <div class="card-title">Recent Patients</div>
+        {% if recent_patients %}
+        <table>
+            <thead><tr><th>Name</th><th>Age</th><th>Admitted</th></tr></thead>
+            <tbody>
+            {% for p in recent_patients %}
+            <tr>
+                <td><a href="{% url 'patient_detail' p.pk %}">{{ p.name }}</a></td>
+                <td>{{ p.age }}</td>
+                <td>{{ p.date_admitted }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}<div class="empty-state"><p>No patients yet.</p></div>{% endif %}
+        <div style="margin-top:1rem;"><a href="{% url 'patient_list' %}" class="btn btn-secondary btn-sm">View All Patients</a></div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Pending Orders</div>
+        {% if pending_orders %}
+        <table>
+            <thead><tr><th>Type</th><th>Patient</th><th>Department</th></tr></thead>
+            <tbody>
+            {% for o in pending_orders %}
+            <tr>
+                <td><a href="{% url 'order_detail' o.pk %}">{{ o.get_order_type_display }}</a></td>
+                <td>{{ o.patient.name }}</td>
+                <td>{{ o.department }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}<div class="empty-state"><p>No pending orders.</p></div>{% endif %}
+        <div style="margin-top:1rem;"><a href="{% url 'order_list' %}" class="btn btn-secondary btn-sm">View All Orders</a></div>
+    </div>
+</div>
+
+<div class="card" style="margin-top:1.5rem;">
+    <div class="card-title">Recent Reports</div>
+    {% if recent_reports %}
+    <table>
+        <thead><tr><th>Patient</th><th>Doctor</th><th>Diagnosis</th><th>Date</th></tr></thead>
+        <tbody>
+        {% for r in recent_reports %}
+        <tr>
+            <td><a href="{% url 'report_detail' r.pk %}">{{ r.patient.name }}</a></td>
+            <td>{{ r.doctor.name }}</td>
+            <td>{{ r.diagnosis|truncatechars:60 }}</td>
+            <td>{{ r.date_created|date:"M d, Y" }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}<div class="empty-state"><p>No reports yet.</p></div>{% endif %}
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-top:1.5rem;">
+    <a href="{% url 'patient_add' %}" class="btn btn-primary">+ Add Patient</a>
+    <a href="{% url 'doctor_add' %}" class="btn btn-success">+ Add Doctor</a>
+    <a href="{% url 'report_add' %}" class="btn btn-warning">+ New Report</a>
+    <a href="{% url 'order_add' %}" class="btn btn-secondary">+ New Order</a>
+    <a href="{% url 'emergency_add' %}" class="btn btn-danger">🚨 Emergency</a>
+    <a href="{% url 'device_data_upload' %}" class="btn btn-secondary">⬆ Upload Data</a>
+</div>
+{% endblock %}

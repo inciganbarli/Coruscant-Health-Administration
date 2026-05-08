@@ -1,0 +1,18 @@
+{% extends 'medical/base.html' %}
+{% block title %}Delete {{ type }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title">⚠️ <span>Delete {{ type }}</span></div>
+</div>
+<div class="card" style="max-width:500px;">
+    <div style="text-align:center;padding:1rem;">
+        <p style="font-size:1.1rem;color:#fca5a5;margin-bottom:0.5rem;">Are you sure you want to delete this {{ type }}?</p>
+        <p style="font-size:1.2rem;font-weight:700;color:#f1f5f9;margin-bottom:2rem;">{{ object }}</p>
+        <form method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        </form>
+        <a href="{% url cancel_url %}" class="btn btn-secondary" style="margin-left:0.5rem;">Cancel</a>
+    </div>
+</div>
+{% endblock %}
